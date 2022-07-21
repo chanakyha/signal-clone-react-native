@@ -3,7 +3,7 @@ import { StatusBar } from "expo-status-bar";
 import { Button, Input, Image } from "@rneui/base";
 import React, { useState } from "react";
 
-const LoginScreen = () => {
+const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -24,7 +24,6 @@ const LoginScreen = () => {
       <View style={styles.inputContainer}>
         <Input
           placeholder="Email"
-          autoFocus
           type="email"
           value={email}
           onChangeText={(text) => setEmail(text)}
@@ -33,12 +32,18 @@ const LoginScreen = () => {
           placeholder="Password"
           type="password"
           value={password}
+          secureTextEntry
           onChangeText={(text) => setPassword(text)}
         />
       </View>
 
       <Button containerStyle={styles.button} onPress={signIn} title="Login" />
-      <Button containerStyle={styles.button} type="outline" title="Register" />
+      <Button
+        containerStyle={styles.button}
+        onPress={() => navigation.navigate("Register")}
+        type="outline"
+        title="Register"
+      />
       <View style={{ height: 100 }} />
     </KeyboardAvoidingView>
   );
