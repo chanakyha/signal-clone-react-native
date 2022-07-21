@@ -1,5 +1,6 @@
 import { KeyboardAvoidingView, StyleSheet, View } from "react-native";
 import React, { useLayoutEffect, useState } from "react";
+import { auth } from "../firebase";
 import { StatusBar } from "expo-status-bar";
 import { Input, Button, Text } from "@rneui/base";
 
@@ -15,7 +16,21 @@ const RegisterScreen = ({ navigation }) => {
     });
   }, [navigation]);
 
-  const onRegister = () => {};
+  const onRegister = () => {
+    auth
+      .createUserWithEmailAndPassword(email, password)
+      .then((res) => {
+        res.user.updateProfile({
+          displayName: name,
+          photoURL:
+            imageURL ||
+            "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png",
+        });
+      })
+      .catch((err) => {
+        alert(err.message);
+      });
+  };
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
