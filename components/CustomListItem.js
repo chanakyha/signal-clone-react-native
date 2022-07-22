@@ -1,15 +1,33 @@
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { Avatar, ListItem } from "@rneui/base";
+import { db } from "../firebase";
 
 const CustomListItem = ({ id, chatName, enterChat }) => {
+  const [chatMessages, setChatMessages] = useState("");
+
+  useEffect(() => {
+    const unsubscribe = db
+      .collection("chats")
+      .doc(id)
+      .collection("messages")
+      .orderBy("timestamp", "desc")
+      .onSnapshot((snapshot) =>
+        setChatMessages(snapshot.docs.map((doc) => doc.data()))
+      );
+
+    return unsubscribe;
+  }, []);
+
   return (
     <TouchableOpacity key={id} onPress={() => enterChat(id, chatName)}>
-      <ListItem bottomDivider>
+      <ListItem key={id} bottomDivider>
         <Avatar
           rounded
           source={{
-            uri: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png",
+            uri:
+              chatMessages?.[0]?.photoURL ||
+              "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png",
           }}
         />
         <ListItem.Content>
@@ -17,14 +35,7 @@ const CustomListItem = ({ id, chatName, enterChat }) => {
             {chatName}
           </ListItem.Title>
           <ListItem.Subtitle numberOfLines={1}>
-            Dolore pariatur id exercitation labore consequat esse non nisi esse
-            sit culpa voluptate. Laboris in in aute quis exercitation incididunt
-            qui incididunt. Duis ipsum adipisicing incididunt excepteur laborum
-            in in magna culpa velit proident veniam. Consequat occaecat ex
-            labore ad. Et minim labore ex dolore cillum exercitation eu
-            excepteur esse duis. Labore anim consequat voluptate aute in sint
-            ullamco voluptate pariatur cupidatat sit pariatur pariatur. Ad
-            adipisicing culpa ea tempor consequat id incididunt nostrud sit.
+            {chatMessages?.[0]?.displayName} : {chatMessages?.[0]?.message}
           </ListItem.Subtitle>
         </ListItem.Content>
       </ListItem>

@@ -32,7 +32,7 @@ const ChatScreen = ({ navigation, route }) => {
           <Avatar
             rounded
             source={{
-              uri: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png",
+              uri: messages[0]?.photoURL,
             }}
           />
           <Text style={{ color: "white", marginLeft: 10, fontWeight: "700" }}>
@@ -54,7 +54,7 @@ const ChatScreen = ({ navigation, route }) => {
         </View>
       ),
     });
-  }, [navigation]);
+  }, [navigation, messages]);
 
   const sendMessage = () => {
     Keyboard.dismiss();
