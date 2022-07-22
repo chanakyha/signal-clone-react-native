@@ -18,7 +18,9 @@ const LoginScreen = ({ navigation }) => {
     return unsubscribe;
   }, []);
 
-  const signIn = () => {};
+  const signIn = () => {
+    auth.signInWithEmailAndPassword(email, password).catch(alert);
+  };
 
   return (
     <KeyboardAvoidingView behavior="padding" style={styles.container}>
@@ -45,6 +47,7 @@ const LoginScreen = ({ navigation }) => {
           value={password}
           secureTextEntry
           onChangeText={(text) => setPassword(text)}
+          onSubmitEditing={signIn}
         />
       </View>
 
