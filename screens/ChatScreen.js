@@ -98,44 +98,46 @@ const ChatScreen = ({ navigation, route }) => {
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <>
-            <ScrollView>
+            <ScrollView contentContainerStyle={{ paddingTop: 15 }}>
               {messages
-                ? messages?.map(({ id, email, message, photoURL }) =>
-                    email === auth.currentUser.email ? (
-                      <View key={id} style={styles.reciever}>
-                        <Avatar
-                          position="absolute"
-                          containerStyle={{
-                            position: "absolute",
-                            bottom: -15,
-                            right: -5,
-                          }}
-                          bottom={-15}
-                          right={-5}
-                          rounded
-                          size={30}
-                          source={{ uri: photoURL }}
-                        />
-                        <Text style={styles.recieverText}>{message}</Text>
-                      </View>
-                    ) : (
-                      <View style={styles.sender}>
-                        <Avatar
-                          position="absolute"
-                          containerStyle={{
-                            position: "absolute",
-                            bottom: -15,
-                            left: -5,
-                          }}
-                          bottom={-15}
-                          left={-5}
-                          rounded
-                          size={30}
-                          source={{ uri: auth }}
-                        />
-                        <Text style={styles.senderText}>{message}</Text>
-                      </View>
-                    )
+                ? messages?.map(
+                    ({ id, email, message, photoURL, displayName }) =>
+                      email === auth.currentUser.email ? (
+                        <View key={id} style={styles.reciever}>
+                          <Avatar
+                            position="absolute"
+                            containerStyle={{
+                              position: "absolute",
+                              bottom: -15,
+                              right: -5,
+                            }}
+                            bottom={-15}
+                            right={-5}
+                            rounded
+                            size={30}
+                            source={{ uri: photoURL }}
+                          />
+                          <Text style={styles.recieverText}>{message}</Text>
+                        </View>
+                      ) : (
+                        <View style={styles.sender}>
+                          <Avatar
+                            position="absolute"
+                            containerStyle={{
+                              position: "absolute",
+                              bottom: -15,
+                              left: -5,
+                            }}
+                            bottom={-15}
+                            left={-5}
+                            rounded
+                            size={30}
+                            source={{ uri: auth }}
+                          />
+                          <Text style={styles.senderText}>{message}</Text>
+                          <Text style={styles.senderName}>{displayName}</Text>
+                        </View>
+                      )
                   )
                 : null}
             </ScrollView>
@@ -181,16 +183,16 @@ const styles = StyleSheet.create({
     color: "grey",
     borderRadius: 30,
   },
-  recieverText: {},
+  recieverText: {
+    color: "black",
+    fontWeight: "500",
+    marginLeft: 10,
+  },
   senderText: {
-    padding: 15,
-    backgroundColor: "#2B68E6",
-    alignSelf: "flex-start",
-    borderRadius: 20,
-    marginBottom: 20,
-    marginRight: 15,
-    maxWidth: "80%",
-    position: "relative",
+    color: "white",
+    fontWeight: "500",
+    marginLeft: 10,
+    marginBottom: 15,
   },
   reciever: {
     padding: 15,
@@ -202,5 +204,20 @@ const styles = StyleSheet.create({
     maxWidth: "80%",
     position: "relative",
   },
-  sender: {},
+  sender: {
+    padding: 15,
+    backgroundColor: "#2B68E6",
+    alignSelf: "flex-start",
+    borderRadius: 20,
+    marginBottom: 20,
+    marginRight: 15,
+    maxWidth: "80%",
+    position: "relative",
+  },
+  senderName: {
+    left: 10,
+    paddingRight: 10,
+    marginLeft: 10,
+    marginBottom: 15,
+  },
 });
