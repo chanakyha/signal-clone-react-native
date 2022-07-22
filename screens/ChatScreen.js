@@ -32,7 +32,9 @@ const ChatScreen = ({ navigation, route }) => {
           <Avatar
             rounded
             source={{
-              uri: messages[0]?.photoURL,
+              uri: messages[messages.length - 1]
+                ? messages[messages.length - 1]?.photoURL
+                : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png",
             }}
           />
           <Text style={{ color: "white", marginLeft: 10, fontWeight: "700" }}>
@@ -57,6 +59,8 @@ const ChatScreen = ({ navigation, route }) => {
   }, [navigation, messages]);
 
   const sendMessage = () => {
+    if (!textInput) return;
+
     Keyboard.dismiss();
 
     db.collection("chats").doc(route.params.id).collection("messages").add({
@@ -102,7 +106,7 @@ const ChatScreen = ({ navigation, route }) => {
               {messages
                 ? messages?.map(
                     ({ id, email, message, photoURL, displayName }) =>
-                      email === auth.currentUser.email ? (
+                      email === auth?.currentUser?.email ? (
                         <View key={id} style={styles.reciever}>
                           <Avatar
                             position="absolute"
@@ -115,12 +119,16 @@ const ChatScreen = ({ navigation, route }) => {
                             right={-5}
                             rounded
                             size={30}
-                            source={{ uri: photoURL }}
+                            source={{
+                              uri:
+                                photoURL ||
+                                "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png",
+                            }}
                           />
                           <Text style={styles.recieverText}>{message}</Text>
                         </View>
                       ) : (
-                        <View style={styles.sender}>
+                        <View key={id} style={styles.sender}>
                           <Avatar
                             position="absolute"
                             containerStyle={{
@@ -132,7 +140,11 @@ const ChatScreen = ({ navigation, route }) => {
                             left={-5}
                             rounded
                             size={30}
-                            source={{ uri: auth }}
+                            source={{
+                              uri:
+                                photoURL ||
+                                "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png",
+                            }}
                           />
                           <Text style={styles.senderText}>{message}</Text>
                           <Text style={styles.senderName}>{displayName}</Text>
@@ -171,6 +183,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     padding: 15,
+    position: "fixed",
+    bottom: 0,
   },
   textInput: {
     bottom: 0,
@@ -206,11 +220,12 @@ const styles = StyleSheet.create({
   },
   sender: {
     padding: 15,
+    paddingBottom: 0,
     backgroundColor: "#2B68E6",
     alignSelf: "flex-start",
     borderRadius: 20,
     marginBottom: 20,
-    marginRight: 15,
+    marginLeft: 15,
     maxWidth: "80%",
     position: "relative",
   },
@@ -219,5 +234,7 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     marginLeft: 10,
     marginBottom: 15,
+    color: "white",
+    opacity: 0.5,
   },
 });
