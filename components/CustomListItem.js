@@ -4,7 +4,7 @@ import { Avatar, ListItem } from "@rneui/base";
 
 const CustomListItem = ({ id, chatName, enterChat }) => {
   return (
-    <TouchableOpacity key={id}>
+    <TouchableOpacity key={id} onPress={() => enterChat(id, chatName)}>
       <ListItem bottomDivider>
         <Avatar
           rounded

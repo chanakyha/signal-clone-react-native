@@ -5,6 +5,7 @@ import LoginScreen from "./screens/LoginScreen";
 import RegisterScreen from "./screens/RegisterScreen";
 import { LogBox } from "react-native";
 import AddChat from "./screens/AddChat";
+import ChatScreen from "./screens/ChatScreen";
 LogBox.ignoreAllLogs();
 
 const Stack = createNativeStackNavigator();
@@ -22,6 +23,7 @@ export default function App() {
         <Stack.Screen name="Register" component={RegisterScreen} />
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="AddChat" component={AddChat} />
+        <Stack.Screen name="Chat" component={ChatScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
