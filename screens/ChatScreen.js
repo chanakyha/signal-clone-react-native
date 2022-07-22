@@ -19,6 +19,7 @@ import * as firebase from "firebase";
 
 const ChatScreen = ({ navigation, route }) => {
   const [textInput, setTextInput] = useState("");
+  const [messages, setMessages] = useState("");
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -58,7 +59,7 @@ const ChatScreen = ({ navigation, route }) => {
   const sendMessage = () => {
     Keyboard.dismiss();
 
-    db.collection("chats").doc(route.params.id).collection("Messages").add({
+    db.collection("chats").doc(route.params.id).collection("messages").add({
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
       message: textInput,
       displayName: auth.currentUser.displayName,
@@ -68,6 +69,24 @@ const ChatScreen = ({ navigation, route }) => {
 
     setTextInput("");
   };
+
+  useLayoutEffect(() => {
+    const unsubscribe = db
+      .collection("chats")
+      .doc(route.params.id)
+      .collection("messages")
+      .orderBy("timestamp", "desc")
+      .onSnapshot((snapshot) =>
+        setMessages(
+          snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }))
+        )
+      );
+
+    return unsubscribe;
+  }, [route]);
 
   return (
     <SafeAreaView>
@@ -79,7 +98,47 @@ const ChatScreen = ({ navigation, route }) => {
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <>
-            <ScrollView>{/* Chat Goes Here */}</ScrollView>
+            <ScrollView>
+              {messages
+                ? messages?.map(({ id, email, message, photoURL }) =>
+                    email === auth.currentUser.email ? (
+                      <View key={id} style={styles.reciever}>
+                        <Avatar
+                          position="absolute"
+                          containerStyle={{
+                            position: "absolute",
+                            bottom: -15,
+                            right: -5,
+                          }}
+                          bottom={-15}
+                          right={-5}
+                          rounded
+                          size={30}
+                          source={{ uri: photoURL }}
+                        />
+                        <Text style={styles.recieverText}>{message}</Text>
+                      </View>
+                    ) : (
+                      <View style={styles.sender}>
+                        <Avatar
+                          position="absolute"
+                          containerStyle={{
+                            position: "absolute",
+                            bottom: -15,
+                            left: -5,
+                          }}
+                          bottom={-15}
+                          left={-5}
+                          rounded
+                          size={30}
+                          source={{ uri: auth }}
+                        />
+                        <Text style={styles.senderText}>{message}</Text>
+                      </View>
+                    )
+                  )
+                : null}
+            </ScrollView>
             <View style={styles.footer}>
               <TextInput
                 value={textInput}
@@ -122,4 +181,26 @@ const styles = StyleSheet.create({
     color: "grey",
     borderRadius: 30,
   },
+  recieverText: {},
+  senderText: {
+    padding: 15,
+    backgroundColor: "#2B68E6",
+    alignSelf: "flex-start",
+    borderRadius: 20,
+    marginBottom: 20,
+    marginRight: 15,
+    maxWidth: "80%",
+    position: "relative",
+  },
+  reciever: {
+    padding: 15,
+    backgroundColor: "#ECECEC",
+    alignSelf: "flex-end",
+    borderRadius: 20,
+    marginBottom: 20,
+    marginRight: 15,
+    maxWidth: "80%",
+    position: "relative",
+  },
+  sender: {},
 });
